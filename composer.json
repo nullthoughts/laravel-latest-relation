@@ -1,0 +1,25 @@
+{
+    "name": "nullthoughts/laravel-latest-relation",
+    "description": "Eloquent macros for querying latest HasMany relationship in Laravel",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jani Gyllenberg",
+            "email": "jani@nullincorporated.com"
+        }
+    ],
+    "require": {},
+    "require-dev": {
+        "orchestra/testbench": "^4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "LaravelLatestRelation\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    }
+}
