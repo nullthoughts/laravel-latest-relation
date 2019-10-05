@@ -18,7 +18,7 @@ class ServiceProvider extends BaseServiceProvider
             return $this->where('id', function ($sub) use ($where) {
                 $sub->from($this->from)
                 ->selectRaw('max(id)')
-                ->whereRaw($where['first']  . ' = ' . $where['second']);
+                ->whereColumn($where['first'], $where['second']);
             });
         });
 
