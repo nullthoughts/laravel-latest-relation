@@ -27,7 +27,7 @@ class EloquentLatestRelationTest extends TestCase
             $table->timestamp('created_at');
             $table->unsignedBigInteger('user_id');
             $table->enum('device_type', ['mobile', 'desktop']);
-            $table->string('profession')->nullable();
+            $table->string('country')->nullable();
         });
 
         DB::table('users')->insert([
@@ -48,49 +48,48 @@ class EloquentLatestRelationTest extends TestCase
                 'user_id' => 1,
                 'created_at' => Carbon::now()->subDays(3),
                 'device_type' => 'mobile',
-                'profession' => null
+                'country' => null
             ], [
  
                 'user_id' => 2,
                 'created_at' => Carbon::now()->subDays(3),
                 'device_type' => 'mobile',
-                'profession' => null
+                'country' => null
             ], [
                 'user_id' => 3,
                 'created_at' => Carbon::now()->subDays(3),
                 'device_type' => 'mobile',
-                'profession' => null],
-            
-            [
+                'country' => 'US'
+            ], [
                 'user_id' => 1,
                 'created_at' => Carbon::now()->subDay(2),
                 'device_type' => 'desktop',
-                'profession' => null
+                'country' => null
             ], [
                 'user_id' => 2,
                 'created_at' => Carbon::now()->subDay(2),
                 'device_type' => 'desktop',
-                'profession' => null
+                'country' => null
             ], [
                 'user_id' => 3,
                 'created_at' => Carbon::now()->subDay(2),
                 'device_type' => 'desktop',
-                'profession' => null
+                'country' => null
             ], [
                 'user_id' => 1,
                 'created_at' => Carbon::now(),
                 'device_type' => 'desktop',
-                'profession' => 'Leisure Consultant'
+                'country' => 'US'
             ], [
                 'user_id' => 2,
                 'created_at' => Carbon::now()->subDay(1),
                 'device_type' => 'mobile',
-                'profession' => null
+                'country' => null
             ], [
                 'user_id' => 3,
                 'created_at' => Carbon::now(),
                 'device_type' => 'mobile',
-                'profession' => null
+                'country' => null
             ],
         ]);
     }
@@ -100,12 +99,12 @@ class EloquentLatestRelationTest extends TestCase
      */
     public function latest_relation()
     {
-        $professions = User::whereHas('logins', function ($query) {
-            $query->latestRelation()->whereNotNull('profession');
+        $users = User::whereHas('logins', function ($query) {
+            $query->latestRelation()->whereNotNull('country');
         });
 
-        $this->assertSame(1, $professions->count());
-        $this->assertSame('Ferris Bueller', $professions->first()->name);
+        $this->assertSame(1, $users->count());
+        $this->assertSame('Ferris Bueller', $users->first()->name);
 
         $loggedInYesterday = User::whereHas('logins', function ($query) {
             $query->latestRelation()->whereBetween(
@@ -118,7 +117,20 @@ class EloquentLatestRelationTest extends TestCase
         $this->assertSame(1, $loggedInYesterday->count());
         $this->assertSame('Cameron Frye', $loggedInYesterday->first()->name);
     }
-    
+
+    /**
+     * @test
+     */
+    public function earilest_relation()
+    {
+        $users = User::whereHas('logins', function ($query) {
+            $query->earliestRelation()->whereNotNull('country');
+        });
+
+        $this->assertSame(1, $users->count());
+        $this->assertSame('Ed Rooney', $users->first()->name);
+    }
+
     /**
      * @test
      */
@@ -143,6 +155,24 @@ class EloquentLatestRelationTest extends TestCase
         $this->assertCount(1, $users);
         $this->assertSame('Ferris Bueller', $users->first()->name);
         $this->assertSame('desktop', $users->first()->lastLogin->device_type);
+    }
+
+    /**
+     * @test
+     */
+    public function where_earilest()
+    {
+        $users = User::whereHas('logins', function ($query) {
+            $query->whereEarliest('device_type', 'mobile');
+        })->get();
+        
+        $this->assertCount(3, $users);
+
+        $users = User::whereHas('logins', function ($query) {
+            $query->whereEarliest('device_type', 'desktop');
+        })->get();
+
+        $this->assertCount(0, $users);
     }
 }
 
