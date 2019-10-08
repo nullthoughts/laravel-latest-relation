@@ -8,7 +8,9 @@ Install via composer:
 ## Usage / Examples
 Use the Builder methods inside a whereHas closure:
 
-### whereLatest($column, $value)
+### Latest:
+
+#### whereLatest($column, $value)
 **Query**
 ```php
 $users = User::whereHas('logins', function ($query) {
@@ -26,7 +28,7 @@ public function scopeByCondition($query, $condition)
 }
 ```
 
-### latestRelation()
+#### latestRelation()
 **Query**
 ```php
 $users = User::whereHas('logins', function ($query) {
@@ -46,4 +48,16 @@ public function scopeByCondition($query, $condition)
         $query->latestRelation()->whereNotNull('device_type');
     });
 }
+```
+
+### Earliest:
+
+```php
+$users = User::whereHas('logins', function ($query) {
+    $query->whereEarliest('device_type', 'desktop');
+});
+
+$users = User::whereHas('logins', function ($query) {
+    $query->earliestRelation()->whereNotNull('device_type');
+});
 ```
