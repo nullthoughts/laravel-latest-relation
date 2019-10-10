@@ -1,5 +1,7 @@
 # Laravel Latest Relation
-Eloquent macros for querying the latest HasMany relationship in Laravel
+Eloquent macros for querying the latest HasMany relationship in Laravel. 
+
+More information on the problem and solutions: [Dynamic scope on latest record in Laravel's HasMany relationships, Part 1: solving with Subqueries - nullthoughts.com](https://nullthoughts.com/development/2019/10/08/dynamic-scope-on-latest-relationship-in-laravel/)
 
 ## Installation
 Install via composer:
