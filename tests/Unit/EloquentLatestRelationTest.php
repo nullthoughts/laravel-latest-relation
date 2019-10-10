@@ -174,6 +174,42 @@ class EloquentLatestRelationTest extends TestCase
 
         $this->assertCount(0, $users);
     }
+
+    /**
+     * @test
+     */
+    public function where_latest_relation()
+    {
+        $users = User::whereLatestRelation('logins', 'device_type', 'mobile')->get();
+        
+        $this->assertCount(2, $users);
+        $this->assertSame('Cameron Frye', $users->first()->name);
+        $this->assertSame('mobile', $users->first()->lastLogin->device_type);
+        $this->assertTrue($users->first()->lastLogin->created_at->isYesterday());
+        $this->assertSame('Ed Rooney', $users->last()->name);
+        $this->assertSame('mobile', $users->last()->lastLogin->device_type);
+        $this->assertTrue($users->last()->lastLogin->created_at->isToday());
+
+        $users = User::whereLatestRelation('logins', 'device_type', 'desktop')->get();
+
+        $this->assertCount(1, $users);
+        $this->assertSame('Ferris Bueller', $users->first()->name);
+        $this->assertSame('desktop', $users->first()->lastLogin->device_type);
+    }
+
+    /**
+     * @test
+     */
+    public function where_earilest_relation()
+    {
+        $users = User::whereEarliestRelation('logins', 'device_type', 'mobile')->get();
+        
+        $this->assertCount(3, $users);
+
+        $users = User::whereEarliestRelation('logins', 'device_type', 'desktop')->get();
+
+        $this->assertCount(0, $users);
+    }
 }
 
 class User extends Model

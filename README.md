@@ -12,6 +12,20 @@ Use the Builder methods inside a whereHas closure:
 
 ### Latest:
 
+#### whereLatestRelation($relation, $column, $value)
+**Query**
+```php
+$users = User::whereLatestRelation('logins', 'device_type', 'desktop');
+```
+
+**Dynamic Scope**
+```php
+public function scopeUsingDevice($query, $device)
+{
+    return $query->whereLatestRelation('logins', 'device_type', $device);
+}
+```
+
 #### whereLatest($column, $value)
 **Query**
 ```php
@@ -22,7 +36,7 @@ $users = User::whereHas('logins', function ($query) {
 
 **Dynamic Scope**
 ```php
-public function scopeByCondition($query, $condition)
+public function scopeUsingDevice($query, $device)
 {
     return $query->whereHas('logins', function ($query) use ($device) {
         $query->whereLatest('device_type', $device);
@@ -44,7 +58,7 @@ $users = User::whereHas('logins', function ($query) {
 
 **Dynamic Scope**
 ```php
-public function scopeByCondition($query, $condition)
+public function scopeHavingDeviceType($query)
 {
     return $query->whereHas('logins', function ($query) {
         $query->latestRelation()->whereNotNull('device_type');
@@ -55,6 +69,8 @@ public function scopeByCondition($query, $condition)
 ### Earliest:
 
 ```php
+$users = User::whereLatestRelation('logins', 'device_type', 'desktop');
+
 $users = User::whereHas('logins', function ($query) {
     $query->whereEarliest('device_type', 'desktop');
 });
