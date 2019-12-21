@@ -22,7 +22,7 @@ class ServiceProvider extends BaseServiceProvider
                     ->whereColumn($where['first'], $where['second']);
             });
         });
-        
+
         QueryBuilder::macro('earliestRelation', function () {
             return $this->relation('min');
         });
@@ -31,23 +31,23 @@ class ServiceProvider extends BaseServiceProvider
             return $this->relation('max');
         });
 
-        QueryBuilder::macro('whereEarliest', function ($column, $value) {
-            return $this->earliestRelation()->where($column, $value);
+        QueryBuilder::macro('whereEarliest', function ($column, $operator = null, $value = null) {
+            return $this->earliestRelation()->where($column, $operator, $value);
         });
 
-        QueryBuilder::macro('whereLatest', function ($column, $value) {
-            return $this->latestRelation()->where($column, $value);
+        QueryBuilder::macro('whereLatest', function ($column, $operator = null, $value = null) {
+            return $this->latestRelation()->where($column, $operator, $value);
         });
 
-        EloquentBuilder::macro('whereEarliestRelation', function ($relation, $column, $value) {
-            return $this->whereHas($relation, function($query) use ($column, $value) {
-                return $query->whereEarliest($column, $value);
+        EloquentBuilder::macro('whereEarliestRelation', function ($relation, $column, $operator = null, $value = null) {
+            return $this->whereHas($relation, function($query) use ($column, $operator, $value) {
+                return $query->whereEarliest($column, $operator, $value);
             });
         });
 
-        EloquentBuilder::macro('whereLatestRelation', function ($relation, $column, $value) {
-            return $this->whereHas($relation, function ($query) use ($column, $value) {
-                $query->whereLatest($column, $value);
+        EloquentBuilder::macro('whereLatestRelation', function ($relation, $column,  $operator = null, $value = null) {
+            return $this->whereHas($relation, function ($query) use ($column, $operator, $value) {
+                $query->whereLatest($column, $operator, $value);
             });
         });
     }
