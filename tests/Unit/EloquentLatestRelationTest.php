@@ -50,7 +50,7 @@ class EloquentLatestRelationTest extends TestCase
                 'device_type' => 'mobile',
                 'country' => null
             ], [
- 
+
                 'user_id' => 2,
                 'created_at' => Carbon::now()->subDays(3),
                 'device_type' => 'mobile',
@@ -109,9 +109,9 @@ class EloquentLatestRelationTest extends TestCase
         $loggedInYesterday = User::whereHas('logins', function ($query) {
             $query->latestRelation()->whereBetween(
                 'created_at', [
-                    Carbon::now()->subDay(1)->startOfDay(),
-                    Carbon::now()->subDay(1)->endOfDay()
-                ]);
+                Carbon::now()->subDay(1)->startOfDay(),
+                Carbon::now()->subDay(1)->endOfDay()
+            ]);
         });
 
         $this->assertSame(1, $loggedInYesterday->count());
@@ -121,7 +121,7 @@ class EloquentLatestRelationTest extends TestCase
     /**
      * @test
      */
-    public function earilest_relation()
+    public function earliest_relation()
     {
         $users = User::whereHas('logins', function ($query) {
             $query->earliestRelation()->whereNotNull('country');
@@ -160,12 +160,12 @@ class EloquentLatestRelationTest extends TestCase
     /**
      * @test
      */
-    public function where_earilest()
+    public function where_earliest()
     {
         $users = User::whereHas('logins', function ($query) {
             $query->whereEarliest('device_type', 'mobile');
         })->get();
-        
+
         $this->assertCount(3, $users);
 
         $users = User::whereHas('logins', function ($query) {
@@ -181,7 +181,7 @@ class EloquentLatestRelationTest extends TestCase
     public function where_latest_relation()
     {
         $users = User::whereLatestRelation('logins', 'device_type', 'mobile')->get();
-        
+
         $this->assertCount(2, $users);
         $this->assertSame('Cameron Frye', $users->first()->name);
         $this->assertSame('mobile', $users->first()->lastLogin->device_type);
@@ -200,15 +200,37 @@ class EloquentLatestRelationTest extends TestCase
     /**
      * @test
      */
-    public function where_earilest_relation()
+    public function where_earliest_relation()
     {
         $users = User::whereEarliestRelation('logins', 'device_type', 'mobile')->get();
-        
+
         $this->assertCount(3, $users);
 
         $users = User::whereEarliestRelation('logins', 'device_type', 'desktop')->get();
 
         $this->assertCount(0, $users);
+    }
+
+    /**
+     * @test
+     */
+    public function where_latest_relation_country_is_not_null()
+    {
+        $users = User::whereLatestRelation('logins', 'country', '!=', 'null');
+
+        $this->assertSame(1, $users->count());
+        $this->assertSame('Ferris Bueller', $users->first()->name);
+    }
+
+    /**
+     * @test
+     */
+    public function where_earliest_relation_country_is_not_null()
+    {
+        $users = User::whereEarliestRelation('logins', 'country', '!=', 'null');
+
+        $this->assertSame(1, $users->count());
+        $this->assertSame('Ed Rooney', $users->first()->name);
     }
 }
 
