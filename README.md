@@ -1,3 +1,10 @@
+<p align="center">
+<a href="https://packagist.org/packages/nullthoughts/laravel-latest-relation" target="_blank"><img src="https://poser.pugx.org/nullthoughts/laravel-latest-relation/d/total.svg" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/nullthoughts/laravel-latest-relation" target="_blank"><img src="https://poser.pugx.org/nullthoughts/laravel-latest-relation/v/stable.svg" alt="Latest Stable Version"></a>
+<a href="https://travis-ci.com/nullthoughts/laravel-latest-relation"><img src="https://api.travis-ci.com/nullthoughts/laravel-latest-relation.svg?branch=master" alt="Travis CI Build Status: Master"></a>
+</p>
+
+
 # Laravel Latest Relation
 Eloquent macros for querying the latest HasMany relationship in Laravel. 
 
@@ -12,10 +19,10 @@ Use the Builder methods inside a whereHas closure:
 
 ### Latest:
 
-#### whereLatestRelation($relation, $column, $value)
+#### whereLatestRelation($relation, $column, $operator = null, $value = null)
 **Query**
 ```php
-$users = User::whereLatestRelation('logins', 'device_type', 'desktop');
+$users = User::whereLatestRelation('logins', 'device_type', '=', 'desktop');
 ```
 
 **Dynamic Scope**
@@ -23,6 +30,11 @@ $users = User::whereLatestRelation('logins', 'device_type', 'desktop');
 public function scopeUsingDevice($query, $device)
 {
     return $query->whereLatestRelation('logins', 'device_type', $device);
+}
+
+public function scopeHavingCountry($query)
+{
+    return $query->whereLatestRelation('logins', 'country', '!=', 'null');
 }
 ```
 
